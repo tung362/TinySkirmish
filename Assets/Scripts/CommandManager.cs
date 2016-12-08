@@ -13,20 +13,20 @@ public class CommandManager : NetworkBehaviour
     public GameObject ResourceManagerObject;
     [SyncVar]
     public GameObject SelectionManagerObject;
-    //[SyncVar]
-    //public GameObject TransformSyncManagerObject;
+    [SyncVar]
+    public GameObject TransformSyncManagerObject;
 
     private PlayerControlPanel ThePlayerControlPanel;
     private ResourceManager TheResourceManager;
     private SelectionManager TheSelectionManager;
-    //private TransformSync TheTransformSyncManager;
+    private TransformSync TheTransformSyncManager;
 
     void Start()
     {
         ThePlayerControlPanel = PlayerControlPanelObject.GetComponent<PlayerControlPanel>();
         TheResourceManager = ResourceManagerObject.GetComponent<ResourceManager>();
         TheSelectionManager = SelectionManagerObject.GetComponent<SelectionManager>();
-        //TheTransformSyncManager = TransformSyncManagerObject.GetComponent<TransformSync>();
+        TheTransformSyncManager = TransformSyncManagerObject.GetComponent<TransformSync>();
     }
 
     void Update()

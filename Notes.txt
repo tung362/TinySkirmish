@@ -1,0 +1,17 @@
+XAVHJ
+XAVHJ
+XAVHJ
+
+even if object is childed to something else the list order will still be the same
+
+String Generator:
+if(stringlist.count == 0)
+{
+	name = currentnumber;
+	currentnumber += 1;
+}
+else
+{
+	name = stringlist[0];
+	stringlist.removeat(0);
+}

@@ -2,135 +2,129 @@
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using System;
 
-//Replaces Network Transform and Network Transform Child with own custom interpolation
-public class TransformSync : NetworkBehaviour
+public class SyncListGameObject : SyncList<GameObject>
 {
-    [SyncVar]
-    Vector3 realPosition = Vector3.zero;
-    [SyncVar]
-    Quaternion realRotation;
-    //0.11f = 9 times per second
-    public float SendSpeed = 0.11f;
-    public float InterpolationSmoothness = 0.1f;
-    private float updateInterval;
-
-    //If this is syncing to a child object instead of the root
-    public Transform ChildTarget;
-    private bool IsSyncingChild = false;
-    [HideInInspector]
-    [SyncVar]
-    public bool ChildIsDestroyed = false;
-
-    void Start()
+    protected override GameObject DeserializeItem(NetworkReader reader)
     {
-        if (ChildTarget != null) IsSyncingChild = true;
+        return reader.ReadGameObject();
     }
 
-    void Update()
+    protected override void SerializeItem(NetworkWriter writer, GameObject item)
     {
-        //Syncs destroyed child objects on server end
-        if (IsSyncingChild && ChildTarget == null)
-        {
-            ChildIsDestroyed = true;
-            Destroy(this);
-            return;
-        }
-
-        if(isServer)
-        {
-            //Update in specific interval to prevent spamming infomation (I'm not sure if this method works for syncvar but just in case it does)
-            updateInterval += Time.deltaTime;
-            if(updateInterval >= SendSpeed)
-            {
-                //Since its already smooth on server, dont need to interpolate. Applys infomation for clients to interpolate
-                if (ChildTarget == null)
-                {
-                    realPosition = transform.position;
-                    realRotation = transform.rotation;
-                }
-                else
-                {
-                    realPosition = ChildTarget.localPosition;
-                    realRotation = ChildTarget.localRotation;
-                }
-            }
-        }
-        else
-        {
-            //Checks client for still existing child object that was destroyed on the server and destroys it
-            if(ChildIsDestroyed)
-            {
-                Destroy(ChildTarget.gameObject);
-            }
-
-            //Applys interpotion if on a client
-            if (ChildTarget == null)
-            {
-                transform.position = Vector3.Lerp(transform.position, realPosition, InterpolationSmoothness);
-                transform.rotation = Quaternion.Lerp(transform.rotation, realRotation, InterpolationSmoothness);
-            }
-            else
-            {
-                ChildTarget.localPosition = Vector3.Lerp(ChildTarget.localPosition, realPosition, InterpolationSmoothness);
-                ChildTarget.localRotation = Quaternion.Lerp(ChildTarget.localRotation, realRotation, InterpolationSmoothness);
-            }
-        }
+        writer.Write(item);
     }
 }
 
-/*
-using UnityEngine;
-using System.Collections;
-using UnityEngine.Networking;
-using System.Collections.Generic;
+public class SyncListVector3 : SyncList<Vector3>
+{
+    protected override Vector3 DeserializeItem(NetworkReader reader)
+    {
+        return reader.ReadVector3();
+    }
+
+    protected override void SerializeItem(NetworkWriter writer, Vector3 item)
+    {
+        writer.Write(item);
+    }
+}
+
+public class SyncListQuaternion : SyncList<Quaternion>
+{
+    protected override Quaternion DeserializeItem(NetworkReader reader)
+    {
+        return reader.ReadQuaternion();
+    }
+
+    protected override void SerializeItem(NetworkWriter writer, Quaternion item)
+    {
+        writer.Write(item);
+    }
+}
 
 //Replaces Network Transform and Network Transform Child with own custom interpolation
 public class TransformSync : NetworkBehaviour
 {
-    public List<Transform> ObjectsToSync;
-    [SyncVar]
-    List<Vector3> realPositions;
-    [SyncVar]
-    List<Quaternion> realRotations;
+    public SyncListGameObject ObjectsToSync = new SyncListGameObject();
+    public SyncListVector3 RealPositions = new SyncListVector3();
+    public SyncListQuaternion RealRotations = new SyncListQuaternion();
+
+    public List<Transform> LocalObjects = new List<Transform>();
+
     //0.11f = 9 times per second
     public float SendSpeed = 0.11f;
     public float InterpolationSmoothness = 0.1f;
-    private float updateInterval;
+    private float UpdateInterval;
 
     void Start()
     {
-        ObjectsToSync.Add(transform);
-        GetAllChilds(transform);
+        ObjectsToSync.Callback = OnChangeOfObjectsToSync;
+        RealPositions.Callback = OnChangeOfPositions;
     }
 
     void Update()
     {
-        if(isServer)
+        //Server Handled
+        if (isServer)
         {
-            //Update in specific interval to prevent spamming infomation (I'm not sure if this method works for syncvar but just in case it does)
-            updateInterval += Time.deltaTime;
-            if(updateInterval >= SendSpeed)
+            if (Input.GetKeyDown(KeyCode.G))
             {
-                realPositions.Clear();
-                realRotations.Clear();
-                foreach (Transform obj in ObjectsToSync)
-                {
-                    //Since its already smooth on server, dont need to interpolate. Applys infomation for clients to interpolate
-                    realPositions.Add(obj.position);
-                    realRotations.Add(obj.rotation);
-                }
+                RealPositions.Add(new Vector3(0, 0, 0));
             }
+
+            //Update in specific interval to prevent spamming infomation (I'm not sure if this method works for syncvar but just in case it does)
+            //UpdateInterval += Time.deltaTime;
+            //if (UpdateInterval >= SendSpeed)
+            //{
+            //    for (int i = 0; i < ObjectsToSync.Count; ++i)
+            //    {
+            //        //Since its already smooth on server, dont need to interpolate. Applys infomation for clients to interpolate
+            //        RealPositions[i] = ObjectsToSync[i].transform.localPosition;
+            //        RealRotations[i] = ObjectsToSync[i].transform.localRotation;
+            //    }
+            //}
         }
+        //Client Handled
         else
         {
-            for(int i = 0; i < ObjectsToSync.Count; ++i)
-            {
-                //Applys interpotion if on a client
-                ObjectsToSync[i].position = Vector3.Lerp(ObjectsToSync[i].position, realPositions[i], InterpolationSmoothness);
-                ObjectsToSync[i].rotation = Quaternion.Lerp(ObjectsToSync[i].rotation, realRotations[i], InterpolationSmoothness);
-            }
+            //for (int i = 0; i < ObjectsToSync.Count; ++i)
+            //{
+            //    //Applys interpotion if on a client
+            //    ObjectsToSync[i].transform.localPosition = Vector3.Lerp(ObjectsToSync[i].transform.localPosition, RealPositions[i], InterpolationSmoothness);
+            //    ObjectsToSync[i].transform.localRotation = Quaternion.Lerp(ObjectsToSync[i].transform.localRotation, RealRotations[i], InterpolationSmoothness);
+            //}
         }
+    }
+
+    //Checks for any deleted objects on the server and destroy them on the client
+    void OnChangeOfObjectsToSync(SyncListGameObject.Operation op, int itemIndex)
+    {
+        //Debug.Log("Augoo");
+        //Compares client list with serverlist and deletes client objects that dont exist on the server;
+        //for (int i = 0; i < LocalObjects.Count; ++i)
+        //{
+        //    bool HasMatched = false;
+        //    for(int j = 0; j < ObjectsToSync.Count; ++j)
+        //    {
+        //        if (LocalObjects[i] == ObjectsToSync[j])
+        //        {
+        //            HasMatched = true;
+        //            break;
+        //        }
+        //    }
+
+        //    if (!HasMatched)
+        //    {
+        //        Destroy(LocalObjects[i].gameObject);
+        //        LocalObjects.RemoveAt(i);
+        //    }
+        //}
+    }
+
+    void OnChangeOfPositions(SyncListVector3.Operation op, int itemIndex)
+    {
+        Debug.Log("Boop");
     }
 
     //Adds every object that desires syncing to the sync list
@@ -138,9 +132,8 @@ public class TransformSync : NetworkBehaviour
     {
         foreach (Transform child in root)
         {
-            if(child.GetComponent<NoSync>() == null) ObjectsToSync.Add(child);
+            if (child.GetComponent<NoSync>() == null) ObjectsToSync.Add(child.gameObject);
             GetAllChilds(child);
         }
     }
 }
-*/

@@ -71,6 +71,8 @@ public struct ServerGameObject
 public class SyncListServerGameObject : SyncListStruct<ServerGameObject> { }
 
 //Replaces Network Transform and Network Transform Child with own custom interpolation
+//Every server game object should be a child to this object
+//Every server game object must have a unique name
 public class TransformSync : NetworkBehaviour
 {
     public SyncListServerGameObject ObjectsToSync = new SyncListServerGameObject();
@@ -79,6 +81,8 @@ public class TransformSync : NetworkBehaviour
 
     //Reusing names
     public SyncListString AvailableNames = new SyncListString();
+    [SyncVar]
+    public int currentNumber = 0;
 
     //0.11f = 9 times per second
     public float SendSpeed = 0.11f;
@@ -121,13 +125,50 @@ public class TransformSync : NetworkBehaviour
         }
     }
 
-    //Checks for any deleted objects on the server and destroy them on the client
+    //Syncs the changes, assuming client and server names are the same
     void OnChangeOfObjectsToSync(SyncListServerGameObject.Operation op, int itemIndex)
     {
         //Set Child
         GameObject currentSyncedObject = GameObject.Find(ObjectsToSync[itemIndex].GameObjectName);
         GameObject currentSyncedParent = GameObject.Find(ObjectsToSync[itemIndex].GameObjectParent);
-        if (currentSyncedParent.transform.root != transform) currentSyncedObject.transform.parent = transform;
 
+        //Newly added
+        if (currentSyncedObject != null)
+        {
+            //Checks if the root is the transform sync manager by default, if not then set it to be
+            if (currentSyncedParent.transform.root != transform) currentSyncedObject.transform.parent = transform;
+
+            //Checks if theres any child objects attached to this object that desires syncing
+            GetAllChilds(currentSyncedObject.transform);
+
+            //Syncs the hierarchy
+            if (currentSyncedObject.transform.parent != currentSyncedParent.transform) currentSyncedObject.transform.parent = currentSyncedParent.transform;
+        }
+        //Destroyed
+        else
+        {
+            ObjectsToSync.RemoveAt(itemIndex);
+        }
+
+        Debug.Log(itemIndex);
     }
+
+    void GetAllChilds(Transform root)
+     {
+         foreach (Transform child in root)
+         {
+            if (child.GetComponent<NoSync>() == null)
+            {
+                ServerGameObject SyncedChild = new ServerGameObject();
+                SyncedChild.GameObjectName = child.name;
+                SyncedChild.GameObjectParent = root.name;
+                ObjectsToSync.Add(SyncedChild);
+            }
+         }
+     }
+
+    //public string NameGenerator(Transform obj)
+    //{
+
+    //}
 }

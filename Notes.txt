@@ -15,3 +15,12 @@ else
 	name = stringlist[0];
 	stringlist.removeat(0);
 }
+
+
+Way of syncing
+have transform sync still track block's childs
+Only allow blocks to child with other blocks
+
+Sync Name
+Have whatever is spawning assign the name's number
+have blocks be incharge of renameing childs(take in numbers only)

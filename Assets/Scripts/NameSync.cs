@@ -2,21 +2,30 @@
 using System.Collections;
 using UnityEngine.Networking;
 
+//Registers synced name and tracker
 public class NameSync : NetworkBehaviour
 {
-    [SyncVar(hook = "OnNameChange")]
-    public string Name;
+    [SyncVar]
+    public string ObjectNameNumber;
 
-    void OnNameChange(string newValue)
+    void Start()
     {
-        transform.name = newValue;
+        //Ensures correct name
+        if (!transform.name.Contains(ObjectNameNumber))
+        {
+            transform.name = transform.name + ObjectNameNumber;
+            SetNamesOfChilds(transform, ObjectNameNumber);
+            if(isServer) FindObjectOfType<ObjectSyncManager>().AddSyncedObject(transform.name, "Unit(Clone)1");
+        }
     }
 
-    void Update()
+    //Set names for all childs that desires syncing
+    void SetNamesOfChilds(Transform root, string NewValue)
     {
-        if (isServer)
+        foreach (Transform child in root)
         {
-            if (Input.GetKeyDown(KeyCode.G)) Name = "Poop";
+            if (child.GetComponent<NoSync>() == null) child.name = child.name + NewValue;
+            SetNamesOfChilds(child, NewValue);
         }
     }
 }

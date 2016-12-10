@@ -9,7 +9,7 @@ public class PlayerControlPanel : NetworkBehaviour
     public GameObject ResourceManagerPrefab;
     public GameObject SelectionManagerPrefab;
     public GameObject CommandManagerPrefab;
-    public GameObject SyncManagerPrefab;
+    public GameObject ObjectSyncManagerPrefab;
 
     public override void OnStartLocalPlayer()
     {
@@ -34,9 +34,9 @@ public class PlayerControlPanel : NetworkBehaviour
         GameObject spawnedSelectionManager = Instantiate(SelectionManagerPrefab) as GameObject;
         NetworkServer.SpawnWithClientAuthority(spawnedSelectionManager, connectionToClient);
 
-        if (FindObjectOfType<TransformSync>() == null)
+        if (FindObjectOfType<ObjectSyncManager>() == null)
         {
-            GameObject spawnedSyncManager = Instantiate(SyncManagerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            GameObject spawnedSyncManager = Instantiate(ObjectSyncManagerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
             NetworkServer.Spawn(spawnedSyncManager);
         }
 
@@ -44,21 +44,21 @@ public class PlayerControlPanel : NetworkBehaviour
         spawnedCommandManager.GetComponent<CommandManager>().PlayerControlPanelObject = gameObject;
         spawnedCommandManager.GetComponent<CommandManager>().ResourceManagerObject = spawnedResourceManager;
         spawnedCommandManager.GetComponent<CommandManager>().SelectionManagerObject = spawnedSelectionManager;
-        spawnedCommandManager.GetComponent<CommandManager>().TransformSyncManagerObject = FindObjectOfType<TransformSync>().gameObject;
+        spawnedCommandManager.GetComponent<CommandManager>().ObjectSyncManagerObject = FindObjectOfType<ObjectSyncManager>().gameObject;
         NetworkServer.SpawnWithClientAuthority(spawnedCommandManager, connectionToClient);
 
         if (GameObject.FindGameObjectWithTag("Player") == null)
         {
             GameObject spawnedUnit = Instantiate(ControlledUnitPrefab, new Vector3(0, 0.938f, 3), ControlledUnitPrefab.transform.rotation) as GameObject;
-            spawnedUnit.transform.parent = FindObjectOfType<TransformSync>().transform;
-            //FindObjectOfType<TransformSync>().GetComponent<TransformSync>().ObjectsToSync.Add(spawnedUnit);
+            //Registers for tracking
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
             NetworkServer.Spawn(spawnedUnit);
         }
         else
         {
             GameObject spawnedUnit = Instantiate(ControlledUnitPrefab, new Vector3(0, 0.938f, 0), ControlledUnitPrefab.transform.rotation) as GameObject;
-            spawnedUnit.transform.parent = FindObjectOfType<TransformSync>().transform;
-            //FindObjectOfType<TransformSync>().GetComponent<TransformSync>().ObjectsToSync.Add(spawnedUnit);
+            //Registers for tracking
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
             NetworkServer.Spawn(spawnedUnit);
         }
     }

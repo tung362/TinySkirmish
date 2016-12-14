@@ -1,0 +1,12 @@
+Today:
+Finish up UI (In class)
+Lobby (Home)
+Main Menu (Home)
+Projectile effects (Home)
+
+Tomorrow
+core game (All day)
+
+//After tomorrow
+core game (whatever time is left)
+polish (whatever time is left)

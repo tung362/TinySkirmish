@@ -17,12 +17,30 @@ public class ShowUiStats : MonoBehaviour
     public bool ShowMissileUnlockView = false;
     public bool ShowRailUnlockView = false;
     public bool ShowLaserUnlockView = false;
+    public bool ShowRegularUnitView = false;
+    public bool ShowRapidUnitView = false;
+    public bool ShowMissileUnitView = false;
+    public bool ShowRailUnitView = false;
+    public bool ShowLaserUnitView = false;
+
+    //Stat Bar
+    public bool ShowShieldDamageUnlockView = false;
+    public bool ShowHullDamageUnlockView = false;
+    public bool ShowSpeedUnlockView = false;
+    public bool ShowFireRateUnlockView = false;
+
+    public bool ShowShieldDamageUnitView = false;
+    public bool ShowHullDamageUnitView = false;
+    public bool ShowSpeedUnitView = false;
+    public bool ShowFireRateUnitView = false;
 
     public Color NewColor;
     private Color PreviousColor;
 
     private Text TheText;
+    private Image TheImage;
     private MeshRenderer TheMeshRenderer;
+    private StatBar TheStatBar;
 
     private ManagerTracker Tracker;
 
@@ -30,7 +48,9 @@ public class ShowUiStats : MonoBehaviour
     {
         Tracker = FindObjectOfType<ManagerTracker>();
         TheText = GetComponent<Text>();
+        TheImage = GetComponent<Image>();
         TheMeshRenderer = GetComponent<MeshRenderer>();
+        TheStatBar = GetComponent<StatBar>();
         if (TheText != null) PreviousColor = TheText.color;
     }
 
@@ -113,6 +133,108 @@ public class ShowUiStats : MonoBehaviour
         {
             if (Tracker.CurrentTechView == 4) TheMeshRenderer.enabled = true;
             else TheMeshRenderer.enabled = false;
+        }
+        if(ShowRegularUnitView)
+        {
+            if(Tracker.BuildingSelected)
+            {
+                if (Tracker.CurrentUnitView == 0) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowRapidUnitView)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.CurrentUnitView == 1) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowMissileUnitView)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.CurrentUnitView == 2) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowRailUnitView)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.CurrentUnitView == 3) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowLaserUnitView)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.CurrentUnitView == 4) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+
+        //Stat Bar
+        if (ShowShieldDamageUnlockView)
+        {
+            if (Tracker.CurrentTechView == 1) TheStatBar.ValueNameCurrent = "RapidShieldDamage";
+            else if (Tracker.CurrentTechView == 2) TheStatBar.ValueNameCurrent = "MissileShieldDamage";
+            else if (Tracker.CurrentTechView == 3) TheStatBar.ValueNameCurrent = "RailShieldDamage";
+            else if (Tracker.CurrentTechView == 4) TheStatBar.ValueNameCurrent = "LaserShieldDamage";
+        }
+        if (ShowHullDamageUnlockView)
+        {
+            if (Tracker.CurrentTechView == 1) TheStatBar.ValueNameCurrent = "RapidHullDamage";
+            else if (Tracker.CurrentTechView == 2) TheStatBar.ValueNameCurrent = "MissileHullDamage";
+            else if (Tracker.CurrentTechView == 3) TheStatBar.ValueNameCurrent = "RailHullDamage";
+            else if (Tracker.CurrentTechView == 4) TheStatBar.ValueNameCurrent = "LaserHullDamage";
+        }
+        if (ShowSpeedUnlockView)
+        {
+            if (Tracker.CurrentTechView == 1) TheStatBar.ValueNameCurrent = "RapidSpeed";
+            else if (Tracker.CurrentTechView == 2) TheStatBar.ValueNameCurrent = "MissileSpeed";
+            else if (Tracker.CurrentTechView == 3) TheStatBar.ValueNameCurrent = "RailSpeed";
+            else if (Tracker.CurrentTechView == 4) TheStatBar.ValueNameCurrent = "LaserSpeed";
+        }
+        if (ShowFireRateUnlockView)
+        {
+            if (Tracker.CurrentTechView == 1) TheStatBar.ValueNameCurrent = "RapidFireRate";
+            else if (Tracker.CurrentTechView == 2) TheStatBar.ValueNameCurrent = "MissileFireRate";
+            else if (Tracker.CurrentTechView == 3) TheStatBar.ValueNameCurrent = "RailFireRate";
+            else if (Tracker.CurrentTechView == 4) TheStatBar.ValueNameCurrent = "LaserFireRate";
+        }
+        if (ShowShieldDamageUnitView)
+        {
+            if (Tracker.CurrentUnitView == 0) TheStatBar.ValueNameCurrent = "RegularShieldDamage";
+            else if (Tracker.CurrentUnitView == 1) TheStatBar.ValueNameCurrent = "RapidShieldDamage";
+            else if (Tracker.CurrentUnitView == 2) TheStatBar.ValueNameCurrent = "MissileShieldDamage";
+            else if (Tracker.CurrentUnitView == 3) TheStatBar.ValueNameCurrent = "RailShieldDamage";
+            else if (Tracker.CurrentUnitView == 4) TheStatBar.ValueNameCurrent = "LaserShieldDamage";
+        }
+        if (ShowHullDamageUnitView)
+        {
+            if (Tracker.CurrentUnitView == 0) TheStatBar.ValueNameCurrent = "RegularHullDamage";
+            else if (Tracker.CurrentUnitView == 1) TheStatBar.ValueNameCurrent = "RapidHullDamage";
+            else if (Tracker.CurrentUnitView == 2) TheStatBar.ValueNameCurrent = "MissileHullDamage";
+            else if (Tracker.CurrentUnitView == 3) TheStatBar.ValueNameCurrent = "RailHullDamage";
+            else if (Tracker.CurrentUnitView == 4) TheStatBar.ValueNameCurrent = "LaserHullDamage";
+        }
+        if (ShowSpeedUnitView)
+        {
+            if (Tracker.CurrentUnitView == 0) TheStatBar.ValueNameCurrent = "RegularSpeed";
+            else if (Tracker.CurrentUnitView == 1) TheStatBar.ValueNameCurrent = "RapidSpeed";
+            else if (Tracker.CurrentUnitView == 2) TheStatBar.ValueNameCurrent = "MissileSpeed";
+            else if (Tracker.CurrentUnitView == 3) TheStatBar.ValueNameCurrent = "RailSpeed";
+            else if (Tracker.CurrentUnitView == 4) TheStatBar.ValueNameCurrent = "LaserSpeed";
+        }
+        if (ShowFireRateUnitView)
+        {
+            if (Tracker.CurrentUnitView == 0) TheStatBar.ValueNameCurrent = "RegularFireRate";
+            else if (Tracker.CurrentUnitView == 1) TheStatBar.ValueNameCurrent = "RapidFireRate";
+            else if (Tracker.CurrentUnitView == 2) TheStatBar.ValueNameCurrent = "MissileFireRate";
+            else if (Tracker.CurrentUnitView == 3) TheStatBar.ValueNameCurrent = "RailFireRate";
+            else if (Tracker.CurrentUnitView == 4) TheStatBar.ValueNameCurrent = "LaserFireRate";
         }
     }
 }

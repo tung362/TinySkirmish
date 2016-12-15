@@ -29,7 +29,6 @@ public class ResourceManager : NetworkBehaviour
     public int LaserCost = 400;
 
     //Player Unit Colors
-
     public SyncListServerColor PlayerColor = new SyncListServerColor();
 
     //Manager Tracker
@@ -52,7 +51,7 @@ public class ResourceManager : NetworkBehaviour
     [ServerCallback]
     public void AddNewPlayerResource()
     {
-        Money.Add(0);
+        Money.Add(100);
         UnlockedRapid.Add(false);
         UnlockedMissile.Add(false);
         UnlockedRail.Add(false);
@@ -63,25 +62,41 @@ public class ResourceManager : NetworkBehaviour
     [ServerCallback]
     public void ChangeRapidValue(bool NewValue, int ID)
     {
-        UnlockedRapid[ID] = NewValue;
+        if(Money[ID] >= RapidCost)
+        {
+            UnlockedRapid[ID] = NewValue;
+            Money[ID] -= RapidCost;
+        }
     }
 
     [ServerCallback]
     public void ChangeMissileValue(bool NewValue, int ID)
     {
-        UnlockedMissile[ID] = NewValue;
+        if (Money[ID] >= MissileCost)
+        {
+            UnlockedMissile[ID] = NewValue;
+            Money[ID] -= MissileCost;
+        }
     }
 
     [ServerCallback]
     public void ChangeRailValue(bool NewValue, int ID)
     {
-        UnlockedRail[ID] = NewValue;
+        if (Money[ID] >= RailCost)
+        {
+            UnlockedRail[ID] = NewValue;
+            Money[ID] -= RailCost;
+        }
     }
 
     [ServerCallback]
     public void ChangeLaserValue(bool NewValue, int ID)
     {
-        UnlockedLaser[ID] = NewValue;
+        if (Money[ID] >= LaserCost)
+        {
+            UnlockedLaser[ID] = NewValue;
+            Money[ID] -= LaserCost;
+        }
     }
 
     [ServerCallback]

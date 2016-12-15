@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class VisibleSwitch : MonoBehaviour
 {
     public string ValueToWatch = "";
+    private bool RunOnce = false;
 
     private Text TheText;
     private Image TheImage;
@@ -30,6 +31,7 @@ public class VisibleSwitch : MonoBehaviour
 
         if(visible)
         {
+            if (!RunOnce) return;
             if (TheText != null) TheText.enabled = true;
             else if (TheImage != null)
             {
@@ -41,9 +43,11 @@ public class VisibleSwitch : MonoBehaviour
                 else TheImage.enabled = true;
             }
             else if (TheMeshRenderer != null) TheMeshRenderer.enabled = true;
+            RunOnce = false;
         }
         else
         {
+            if (RunOnce) return;
             if (TheText != null) TheText.enabled = false;
             else if (TheImage != null)
             {
@@ -55,6 +59,7 @@ public class VisibleSwitch : MonoBehaviour
                 else TheImage.enabled = false;
             }
             else if (TheMeshRenderer != null) TheMeshRenderer.enabled = false;
+            RunOnce = true;
         }
     }
 }

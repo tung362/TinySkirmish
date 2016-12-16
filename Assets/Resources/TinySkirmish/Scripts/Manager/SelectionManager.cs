@@ -13,6 +13,11 @@ public class SelectionManager : MonoBehaviour
     //Manager Tracker
     private bool AssignManagerTracker = true;
 
+    void Start()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
+
     void Update()
     {
         if (AssignManagerTracker)
@@ -80,19 +85,18 @@ public class SelectionManager : MonoBehaviour
     {
         if (StartingMousePosition == -Vector2.one) return;
 
-        GameObject[] units = GameObject.FindGameObjectsWithTag("Player");
-        foreach(GameObject unit in units)
+        GameObject[] units = GameObject.FindGameObjectsWithTag("Unit");
+        foreach (GameObject unit in units)
         {
-            //Edit later
-            if(SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.GetComponent<Renderer>().material.color = Color.red;
-            else unit.GetComponent<Renderer>().material.color = Color.white;
+            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.GetComponent<UnitStats>().IsSelected = true;
+            else unit.GetComponent<UnitStats>().IsSelected = false;
         }
     }
 
     //Add hovered objects to list
     void DragSelectObject()
     {
-        GameObject[] units = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] units = GameObject.FindGameObjectsWithTag("Unit");
         foreach (GameObject unit in units)
         {
             if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) SelectedUnits.Add(unit);
@@ -102,18 +106,17 @@ public class SelectionManager : MonoBehaviour
     //Add clicked object to list
     void QuickSelect()
     {
-        if(SelectedUnits.Count == 0)
+        if (SelectedUnits.Count == 0)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit mouseHit;
 
             if (Physics.Raycast(mouseRay, out mouseHit))
             {
-                if(mouseHit.transform.tag == "Player")
+                if (mouseHit.transform.tag == "Unit")
                 {
                     SelectedUnits.Add(mouseHit.transform.root.gameObject);
-                    //Edit later
-                    mouseHit.transform.root.GetComponent<Renderer>().material.color = Color.red;
+                    mouseHit.transform.root.GetComponent<UnitStats>().IsSelected = true;
                 }
             }
         }
@@ -122,7 +125,7 @@ public class SelectionManager : MonoBehaviour
     //Clears list and unapply hover effect
     void ResetSelect()
     {
-        foreach (GameObject unit in SelectedUnits) unit.GetComponent<Renderer>().material.color = Color.white;
+        foreach (GameObject unit in SelectedUnits) unit.GetComponent<UnitStats>().IsSelected = false;
         SelectedUnits.Clear();
     }
 }

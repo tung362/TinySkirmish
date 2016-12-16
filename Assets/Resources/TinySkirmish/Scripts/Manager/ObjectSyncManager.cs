@@ -114,6 +114,11 @@ public class ObjectSyncManager : NetworkBehaviour
     //Manager Tracker
     private bool AssignManagerTracker = true;
 
+    void Start()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
+
     void Update()
     {
         if (AssignManagerTracker)

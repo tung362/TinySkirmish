@@ -5,6 +5,8 @@ public class ManagerTracker : MonoBehaviour
 {
     //Server involved
     public int ID = -1;
+    public int NumberOfPlayers = 0;
+    public string LevelName = "Level1";
     public PlayerControlPanel ThePlayerControlPanel;
     public ResourceManager TheResourceManager;
     public SelectionManager TheSelectionManager;
@@ -64,6 +66,11 @@ public class ManagerTracker : MonoBehaviour
     public float LaserSpeed = 100;
     [HideInInspector]
     public float LaserFireRate = 100;
+
+    void Start()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
 
     void Update()
     {

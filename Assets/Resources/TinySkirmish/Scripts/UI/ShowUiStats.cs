@@ -11,6 +11,11 @@ public class ShowUiStats : MonoBehaviour
     public bool ShowMissileBuy = false;
     public bool ShowRailBuy = false;
     public bool ShowLaserBuy = false;
+    public bool ShowPlayer1Ready = false;
+    public bool ShowPlayer2Ready = false;
+    public bool ShowPlayer3Ready = false;
+    public bool ShowPlayer4Ready = false;
+    public bool ShowClientReady = false;
 
     //Mesh Renderer
     public bool ShowRapidUnlockView = false;
@@ -28,7 +33,6 @@ public class ShowUiStats : MonoBehaviour
     public bool ShowHullDamageUnlockView = false;
     public bool ShowSpeedUnlockView = false;
     public bool ShowFireRateUnlockView = false;
-
     public bool ShowShieldDamageUnitView = false;
     public bool ShowHullDamageUnitView = false;
     public bool ShowSpeedUnitView = false;
@@ -110,6 +114,84 @@ public class ShowUiStats : MonoBehaviour
             {
                 if (TheText.color != NewColor) TheText.color = NewColor;
                 TheText.text = "Unlocked";
+            }
+        }
+
+        if(ShowPlayer1Ready)
+        {
+            if(0 > Tracker.NumberOfPlayers) return;
+            if (Tracker.TheResourceManager.PlayerReady[0])
+            {
+                TheText.text = "Ready";
+                TheText.color = Color.green;
+            }
+            else
+            {
+                TheText.text = "Unready";
+                TheText.color = Color.red;
+            }
+        }
+        if (ShowPlayer2Ready)
+        {
+            if (1 > Tracker.NumberOfPlayers) return;
+            if (Tracker.TheResourceManager.PlayerReady[1])
+            {
+                TheText.text = "Ready";
+                TheText.color = Color.green;
+            }
+            else
+            {
+                TheText.text = "Unready";
+                TheText.color = Color.red;
+            }
+        }
+        if (ShowPlayer3Ready)
+        {
+            if (2 > Tracker.NumberOfPlayers) return;
+            if (Tracker.TheResourceManager.PlayerReady[2])
+            {
+                TheText.text = "Ready";
+                TheText.color = Color.green;
+            }
+            else
+            {
+                TheText.text = "Unready";
+                TheText.color = Color.red;
+            }
+        }
+        if (ShowPlayer4Ready)
+        {
+            if (3 > Tracker.NumberOfPlayers) return;
+            if (Tracker.TheResourceManager.PlayerReady[3])
+            {
+                TheText.text = "Ready";
+                TheText.color = Color.green;
+            }
+            else
+            {
+                TheText.text = "Unready";
+                TheText.color = Color.red;
+            }
+        }
+        if(ShowClientReady)
+        {
+            if(Tracker.ID == 0)
+            {
+                TheText.text = "Start";
+                TheText.color = Color.green;
+            }
+            else
+            {
+                if (Tracker.TheResourceManager.PlayerReady[Tracker.ID])
+                {
+                    TheText.text = "Ready";
+                    TheText.color = Color.green;
+                }
+                else
+                {
+                    TheText.text = "Unready";
+                    TheText.color = Color.red;
+                }
             }
         }
 

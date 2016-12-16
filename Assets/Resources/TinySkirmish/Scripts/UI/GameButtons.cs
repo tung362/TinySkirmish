@@ -10,16 +10,23 @@ public class GameButtons : MonoBehaviour
         Tracker = FindObjectOfType<ManagerTracker>();
     }
 
-    public void ChangeCurrentTechView(int newValue)
+    public void ChangeReadyStatus(bool NewValue)
     {
         if (!Tracker.FullyFunctional) return;
-        Tracker.CurrentTechView = newValue;
+        if(Tracker.ID == 0) Tracker.TheCommandManager.CmdStartGame(Tracker.LevelName);
+        else Tracker.TheCommandManager.CmdChangeReadyValue(NewValue, Tracker.ID);
     }
 
-    public void ChangeCurrentUnitView(int newValue)
+    public void ChangeCurrentTechView(int NewValue)
     {
         if (!Tracker.FullyFunctional) return;
-        Tracker.CurrentUnitView = newValue;
+        Tracker.CurrentTechView = NewValue;
+    }
+
+    public void ChangeCurrentUnitView(int NewValue)
+    {
+        if (!Tracker.FullyFunctional) return;
+        Tracker.CurrentUnitView = NewValue;
     }
 
     public void ChangeRapidValue(bool NewValue)

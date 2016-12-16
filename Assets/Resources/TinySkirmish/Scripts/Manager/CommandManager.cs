@@ -11,6 +11,7 @@ public class CommandManager : NetworkBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(transform.gameObject);
     }
 
     void Update()
@@ -42,11 +43,11 @@ public class CommandManager : NetworkBehaviour
         //}
     }
 
-    [Command]
-    void CmdAutopath(Vector3 Destination, GameObject Unit)
-    {
-        Unit.GetComponent<ControlledUnit>().Autopath(Destination);
-    }
+    //[Command]
+    //void CmdAutopath(Vector3 Destination, GameObject Unit)
+    //{
+    //    Unit.GetComponent<ControlledUnit>().Autopath(Destination);
+    //}
 
 
 
@@ -57,9 +58,21 @@ public class CommandManager : NetworkBehaviour
 
     //Lobby Commands////////////////////////////////////////////////////////////////
     [Command]
-    public void CmdChangePlayerColor(Color NewOutlineColor, Color NewOutlineEmissionColor, int NewOutlineEmissionlevel, Color NewBaseColor, Color NewBaseEmissionColor, int NewBaseEmissionlevel, int ID)
+    public void CmdChangePlayerColor(Color NewOutlineColor, Color NewOutlineEmissionColor, float NewOutlineEmissionlevel, Color NewBaseColor, Color NewBaseEmissionColor, float NewBaseEmissionlevel, int ID)
     {
         FindObjectOfType<ManagerTracker>().TheResourceManager.ChangePlayerColor(NewOutlineColor, NewOutlineEmissionColor, NewOutlineEmissionlevel, NewBaseColor, NewBaseEmissionColor, NewBaseEmissionlevel, ID);
+    }
+
+    [Command]
+    public void CmdChangeReadyValue(bool NewValue, int ID)
+    {
+        FindObjectOfType<ManagerTracker>().TheResourceManager.ChangeReadyValue(NewValue, ID);
+    }
+
+    [Command]
+    public void CmdStartGame(string LevelName)
+    {
+        FindObjectOfType<ManagerTracker>().TheResourceManager.StartGame(LevelName);
     }
     ////////////////////////////////////////////////////////////////////////////////
 

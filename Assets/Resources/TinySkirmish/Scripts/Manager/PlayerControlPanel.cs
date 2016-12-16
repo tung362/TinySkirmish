@@ -5,10 +5,14 @@ using UnityEngine.Networking;
 //Handles spawning of essential managers onto the server to manage the client, player component
 public class PlayerControlPanel : NetworkBehaviour
 {
-    public GameObject ControlledUnitPrefab;
     public GameObject ResourceManagerPrefab;
     public GameObject CommandManagerPrefab;
     public GameObject ObjectSyncManagerPrefab;
+
+    void Start()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
 
     public override void OnStartLocalPlayer()
     {
@@ -18,8 +22,7 @@ public class PlayerControlPanel : NetworkBehaviour
         CmdInitializeClient();
 
         FindObjectOfType<ManagerTracker>().ThePlayerControlPanel = this;
-        if (isServer) FindObjectOfType<ManagerTracker>().ID = connectionToClient.connectionId;
-        else FindObjectOfType<ManagerTracker>().ID = connectionToServer.connectionId;
+        FindObjectOfType<ManagerTracker>().ID = GameObject.FindGameObjectsWithTag("Player").Length - 1;
     }
 
     [ServerCallback]
@@ -38,10 +41,10 @@ public class PlayerControlPanel : NetworkBehaviour
             NetworkServer.Spawn(spawnedSyncManager);
         }
 
-        GameObject spawnedUnit = Instantiate(ControlledUnitPrefab, new Vector3(0, 0, 0), ControlledUnitPrefab.transform.rotation) as GameObject;
-        //Registers for tracking
-        spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
-        NetworkServer.Spawn(spawnedUnit);
+        //GameObject spawnedUnit = Instantiate(ControlledUnitPrefab, new Vector3(0, 0, 0), ControlledUnitPrefab.transform.rotation) as GameObject;
+        ////Registers for tracking
+        //spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+        //NetworkServer.Spawn(spawnedUnit);
     }
 
     [Command]
@@ -51,5 +54,33 @@ public class PlayerControlPanel : NetworkBehaviour
 
         GameObject spawnedCommandManager = Instantiate(CommandManagerPrefab) as GameObject;
         NetworkServer.SpawnWithClientAuthority(spawnedCommandManager, connectionToClient);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G)) Test();
+        if (Input.GetKeyDown(KeyCode.H)) Test2();
+    }
+
+    public GameObject TestObj;
+
+    [ServerCallback]
+    void Test()
+    {
+        GameObject spawnedUnit = Instantiate(TestObj, new Vector3(0, 0, 0), TestObj.transform.rotation) as GameObject;
+        //Registers for tracking
+        spawnedUnit.GetComponent<PlayerID>().ID = 0;
+        spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+        NetworkServer.Spawn(spawnedUnit);
+    }
+
+    [ServerCallback]
+    void Test2()
+    {
+        GameObject spawnedUnit = Instantiate(TestObj, new Vector3(2.58f, 0, 1.4f), TestObj.transform.rotation) as GameObject;
+        //Registers for tracking
+        spawnedUnit.GetComponent<PlayerID>().ID = 1;
+        spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+        NetworkServer.Spawn(spawnedUnit);
     }
 }

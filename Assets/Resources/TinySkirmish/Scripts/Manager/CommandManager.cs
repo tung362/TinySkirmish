@@ -52,8 +52,23 @@ public class CommandManager : NetworkBehaviour
 
 
     //Unit Commands/////////////////////////////////////////////////////////////////
+    [Command]
+    public void CmdToggleAutoPath(Vector3 Destination, GameObject Unit)
+    {
+        Unit.GetComponent<UnitController>().ToggleAutoPath(Destination);
+    }
 
+    [Command]
+    public void CmdToggleAttackBuilding(GameObject Target, GameObject Unit)
+    {
+        Unit.GetComponent<UnitController>().ToggleAttackBuilding(Target);
+    }
 
+    [Command]
+    public void CmdToggleStayStill(GameObject Unit)
+    {
+        Unit.GetComponent<UnitController>().ToggleStayStill();
+    }
     ////////////////////////////////////////////////////////////////////////////////
 
     //Lobby Commands////////////////////////////////////////////////////////////////

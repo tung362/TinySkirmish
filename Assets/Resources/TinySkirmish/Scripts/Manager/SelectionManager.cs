@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class SelectionManager : MonoBehaviour
 {
     public List<GameObject> SelectedUnits;
+    public List<GameObject> SelectedBuildings;
     public Rect SelectionBox;
     private Vector2 StartingMousePosition = -Vector2.one;
     private Vector2 EndingMousePosition = -Vector2.one;
@@ -88,8 +89,8 @@ public class SelectionManager : MonoBehaviour
         GameObject[] units = GameObject.FindGameObjectsWithTag("Unit");
         foreach (GameObject unit in units)
         {
-            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.GetComponent<UnitStats>().IsSelected = true;
-            else unit.GetComponent<UnitStats>().IsSelected = false;
+            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+            else unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
         }
     }
 
@@ -125,7 +126,7 @@ public class SelectionManager : MonoBehaviour
     //Clears list and unapply hover effect
     void ResetSelect()
     {
-        foreach (GameObject unit in SelectedUnits) unit.GetComponent<UnitStats>().IsSelected = false;
+        foreach (GameObject unit in SelectedUnits) unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
         SelectedUnits.Clear();
     }
 }

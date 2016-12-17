@@ -130,5 +130,16 @@ public class UnitController : NetworkBehaviour
                 FindObjectOfType<ObjectSyncManager>().DestroySyncedObject(other.transform.name);
             }
         }
+
+        if (other.tag == "Gate")
+        {
+            if (other.GetComponent<Gate>().ID != ThePlayerID.ID)
+            {
+                //To do: place particles here
+                other.GetComponent<Gate>().AttackerID = ThePlayerID.ID;
+                other.GetComponent<Gate>().Health -= 10;
+                FindObjectOfType<ObjectSyncManager>().DestroySyncedObject(transform.name);
+            }
+        }
     }
 }

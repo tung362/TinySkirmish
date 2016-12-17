@@ -115,5 +115,11 @@ public class CommandManager : NetworkBehaviour
     {
         FindObjectOfType<ManagerTracker>().TheResourceManager.ChangeLaserValue(NewValue, ID);
     }
+
+    [Command]
+    public void CmdAddToSpawnQueue(int NewValue, string TheGateName, int ClientID)
+    {
+        GameObject.Find(TheGateName).GetComponent<Gate>().AddToSpawnQueue(NewValue, ClientID);
+    }
     ////////////////////////////////////////////////////////////////////////////////
 }

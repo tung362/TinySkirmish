@@ -10,12 +10,16 @@ public class SelectionManager : MonoBehaviour
     public Rect SelectionBox;
     private Vector2 StartingMousePosition = -Vector2.one;
     private Vector2 EndingMousePosition = -Vector2.one;
+    public bool IsOverUI = false;
 
     //Manager Tracker
     private bool AssignManagerTracker = true;
 
+    private ManagerTracker Tracker;
+
     void Start()
     {
+        Tracker = FindObjectOfType<ManagerTracker>();
         DontDestroyOnLoad(transform.gameObject);
     }
 
@@ -27,8 +31,13 @@ public class SelectionManager : MonoBehaviour
             AssignManagerTracker = false;
         }
 
-        UpdateInput();
-        SetRectangle();
+        if (!Tracker.FullyFunctional) return;
+        if (IsOverUI) IsOverUI = false;
+        else
+        {
+            UpdateInput();
+            SetRectangle();
+        }
     }
 
     void UpdateInput()
@@ -91,7 +100,7 @@ public class SelectionManager : MonoBehaviour
         {
             if(unit != null)
             {
-                if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+                if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)) && Tracker.ID == unit.transform.root.GetComponent<PlayerID>().ID) unit.transform.root.GetComponent<UnitStats>().IsSelected = true;
                 else unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
             }
         }
@@ -103,7 +112,7 @@ public class SelectionManager : MonoBehaviour
         GameObject[] units = GameObject.FindGameObjectsWithTag("Unit");
         foreach (GameObject unit in units)
         {
-            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) SelectedUnits.Add(unit);
+            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)) && Tracker.ID == unit.transform.root.GetComponent<PlayerID>().ID) SelectedUnits.Add(unit);
         }
     }
 
@@ -113,14 +122,24 @@ public class SelectionManager : MonoBehaviour
         if (SelectedUnits.Count == 0)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit mouseHit;
+            RaycastHit[] mouseHits = Physics.RaycastAll(mouseRay);
 
-            if (Physics.Raycast(mouseRay, out mouseHit))
+            foreach(RaycastHit mouseHit in mouseHits)
             {
                 if (mouseHit.transform.tag == "Unit")
                 {
-                    SelectedUnits.Add(mouseHit.transform.root.gameObject);
-                    if(mouseHit.transform != null) mouseHit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+                    if (Tracker.ID == mouseHit.transform.root.GetComponent<PlayerID>().ID) SelectedUnits.Add(mouseHit.transform.root.gameObject);
+                    if (mouseHit.transform != null)
+                    {
+                        if(Tracker.ID == mouseHit.transform.root.GetComponent<PlayerID>().ID) mouseHit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+                    }
+                }
+                if (mouseHit.transform.tag == "Gate")
+                {
+                    SelectedUnits.Clear();
+                    SelectedBuildings.Add(mouseHit.transform.root.gameObject);
+                    if (mouseHit.transform != null) mouseHit.transform.root.GetComponent<Gate>().IsSelected = true;
+                    break;
                 }
             }
         }
@@ -133,6 +152,11 @@ public class SelectionManager : MonoBehaviour
         {
             if (unit != null) unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
         }
+        foreach (GameObject unit in SelectedBuildings)
+        {
+            if (unit != null) unit.transform.root.GetComponent<Gate>().IsSelected = false;
+        }
         SelectedUnits.Clear();
+        SelectedBuildings.Clear();
     }
 }

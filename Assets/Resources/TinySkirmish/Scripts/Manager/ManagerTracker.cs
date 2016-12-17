@@ -78,5 +78,11 @@ public class ManagerTracker : MonoBehaviour
         {
             if(ID != -1 && ThePlayerControlPanel != null && TheResourceManager != null && TheSelectionManager != null && TheCommandManager != null && TheObjectSyncManager != null) FullyFunctional = true;
         }
+
+        if(FullyFunctional)
+        {
+            if(TheSelectionManager.SelectedBuildings.Count != 0) BuildingSelected = true;
+            else BuildingSelected = false;
+        }
     }
 }

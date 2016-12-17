@@ -37,10 +37,10 @@ public class UnitCommand : MonoBehaviour
 
                 foreach (RaycastHit hit in mouseHits)
                 {
-                    if (hit.transform.tag == "Building")
+                    if (hit.transform.tag == "Gate")
                     {
                         HitBase = hit.transform.gameObject;
-                        return;
+                        break;
                     }
                     if (hit.transform.tag == "Ground") groundHitPosition = hit.point;
                 }
@@ -48,7 +48,7 @@ public class UnitCommand : MonoBehaviour
                 //Attack building
                 if(HitBase != null)
                 {
-                    foreach(GameObject unit in Tracker.TheSelectionManager.SelectedUnits) if(unit != null) Tracker.TheCommandManager.CmdToggleAttackBuilding(HitBase, unit);
+                    foreach (GameObject unit in Tracker.TheSelectionManager.SelectedUnits) if(unit != null) Tracker.TheCommandManager.CmdToggleAttackBuilding(HitBase, unit);
                 }
                 //Move to destination
                 else

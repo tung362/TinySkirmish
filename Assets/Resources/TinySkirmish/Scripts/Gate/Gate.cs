@@ -118,7 +118,7 @@ public class Gate : NetworkBehaviour
 
     Vector3 GeneratePoint(Vector3 point)
     {
-        return point + (Random.insideUnitSphere * (1 * 0.1f * 0.4f));
+        return point + (Random.insideUnitSphere * 1);
     }
 
     [ServerCallback]
@@ -174,8 +174,56 @@ public class Gate : NetworkBehaviour
 
     //Commands
     [ServerCallback]
-    void AddToSpawnQueue(int NewValue, int ClientID)
+    public void AddToSpawnQueue(int NewValue, int ClientID)
     {
-        SpawnQueue.Add(NewValue);
+        if(ID == -1) return;
+        if(ClientID == ID)
+        {
+            //Prices
+            if(NewValue == 0)
+            {
+                if (Tracker.TheResourceManager.Money[ID] >= 10)
+                {
+                    SpawnQueue.Add(NewValue);
+                    Tracker.TheResourceManager.Money[ID] -= 10;
+                }
+            }
+            //Prices
+            else if (NewValue == 1)
+            {
+                if (Tracker.TheResourceManager.Money[ID] >= 15 && Tracker.TheResourceManager.UnlockedRapid[ID])
+                {
+                    SpawnQueue.Add(NewValue);
+                    Tracker.TheResourceManager.Money[ID] -= 15;
+                }
+            }
+            //Prices
+            else if (NewValue == 2)
+            {
+                if (Tracker.TheResourceManager.Money[ID] >= 20 && Tracker.TheResourceManager.UnlockedMissile[ID])
+                {
+                    SpawnQueue.Add(NewValue);
+                    Tracker.TheResourceManager.Money[ID] -= 20;
+                }
+            }
+            //Prices
+            else if (NewValue == 3)
+            {
+                if (Tracker.TheResourceManager.Money[ID] >= 30 && Tracker.TheResourceManager.UnlockedRail[ID])
+                {
+                    SpawnQueue.Add(NewValue);
+                    Tracker.TheResourceManager.Money[ID] -= 30;
+                }
+            }
+            //Prices
+            else if (NewValue == 4)
+            {
+                if (Tracker.TheResourceManager.Money[ID] >= 25 && Tracker.TheResourceManager.UnlockedLaser[ID])
+                {
+                    SpawnQueue.Add(NewValue);
+                    Tracker.TheResourceManager.Money[ID] -= 25;
+                }
+            }
+        }
     }
 } 

@@ -66,7 +66,6 @@ public class ResourceManager : NetworkBehaviour
                 {
                     foreach(GameObject gateSpawner in gateSpawners)
                     {
-                        Debug.Log(gateSpawner.transform.position);
                         GateSpawnSpot theGateSpawnSpot = gateSpawner.GetComponent<GateSpawnSpot>();
                         if (theGateSpawnSpot.IsPlayer1Location) SpawnGate(0, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
                         else if (theGateSpawnSpot.IsPlayer2Location) SpawnGate(1, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));

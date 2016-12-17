@@ -23,7 +23,6 @@ public class VisibleSwitch : MonoBehaviour
         TheButton = GetComponent<Button>();
         TheMeshRenderer = GetComponent<MeshRenderer>();
     }
-
     void Update()
     {
         if (!Tracker.FullyFunctional) return;

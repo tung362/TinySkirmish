@@ -52,4 +52,11 @@ public class GameButtons : MonoBehaviour
         if (!Tracker.FullyFunctional) return;
         Tracker.TheCommandManager.CmdChangeLaserValue(NewValue, Tracker.ID);
     }
+
+    public void AddToSpawnQueue(int NewValue)
+    {
+        if (!Tracker.FullyFunctional) return;
+        if (Tracker.TheSelectionManager.SelectedBuildings.Count == 0) return;
+        Tracker.TheCommandManager.CmdAddToSpawnQueue(NewValue, Tracker.TheSelectionManager.SelectedBuildings[0].gameObject.name, Tracker.ID);
+    }
 }

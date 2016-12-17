@@ -9,10 +9,12 @@ public class SelectedRingRotate : MonoBehaviour
     public MeshRenderer Ring4;
 
     private UnitStats TheUnitStats;
+    private Gate TheGate;
 
     void Start()
     {
         TheUnitStats = transform.root.GetComponent<UnitStats>();
+        TheGate = transform.root.GetComponent<Gate>();
     }
 
     public Vector3 RotationDirection = Vector3.zero;
@@ -20,25 +22,53 @@ public class SelectedRingRotate : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (TheUnitStats.IsSelected)
+        if(TheUnitStats != null)
         {
-            if(!Ring1.enabled || !Ring2.enabled || !Ring3.enabled || !Ring4.enabled)
+            if (TheUnitStats.IsSelected)
             {
-                Ring1.enabled = true;
-                Ring2.enabled = true;
-                Ring3.enabled = true;
-                Ring4.enabled = true;
+                if (!Ring1.enabled || !Ring2.enabled || !Ring3.enabled || !Ring4.enabled)
+                {
+                    Ring1.enabled = true;
+                    Ring2.enabled = true;
+                    Ring3.enabled = true;
+                    Ring4.enabled = true;
+                }
+                transform.Rotate(RotationDirection * Speed * Time.fixedDeltaTime);
             }
-            transform.Rotate(RotationDirection * Speed * Time.fixedDeltaTime);
-        }
-        else
-        {
-            if (Ring1.enabled || Ring2.enabled || Ring3.enabled || Ring4.enabled)
+            else
             {
-                Ring1.enabled = false;
-                Ring2.enabled = false;
-                Ring3.enabled = false;
-                Ring4.enabled = false;
+                if (Ring1.enabled || Ring2.enabled || Ring3.enabled || Ring4.enabled)
+                {
+                    Ring1.enabled = false;
+                    Ring2.enabled = false;
+                    Ring3.enabled = false;
+                    Ring4.enabled = false;
+                }
+            }
+        }
+
+        if (TheGate != null)
+        {
+            if (TheGate.IsSelected)
+            {
+                if (!Ring1.enabled || !Ring2.enabled || !Ring3.enabled || !Ring4.enabled)
+                {
+                    Ring1.enabled = true;
+                    Ring2.enabled = true;
+                    Ring3.enabled = true;
+                    Ring4.enabled = true;
+                }
+                transform.Rotate(RotationDirection * Speed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                if (Ring1.enabled || Ring2.enabled || Ring3.enabled || Ring4.enabled)
+                {
+                    Ring1.enabled = false;
+                    Ring2.enabled = false;
+                    Ring3.enabled = false;
+                    Ring4.enabled = false;
+                }
             }
         }
     }

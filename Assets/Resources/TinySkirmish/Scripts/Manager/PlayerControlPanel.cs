@@ -55,32 +55,4 @@ public class PlayerControlPanel : NetworkBehaviour
         GameObject spawnedCommandManager = Instantiate(CommandManagerPrefab) as GameObject;
         NetworkServer.SpawnWithClientAuthority(spawnedCommandManager, connectionToClient);
     }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.G)) Test();
-        if (Input.GetKeyDown(KeyCode.H)) Test2();
-    }
-
-    public GameObject TestObj;
-
-    [ServerCallback]
-    void Test()
-    {
-        GameObject spawnedUnit = Instantiate(TestObj, new Vector3(0, 0, 0), TestObj.transform.rotation) as GameObject;
-        //Registers for tracking
-        spawnedUnit.GetComponent<PlayerID>().ID = 0;
-        spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
-        NetworkServer.Spawn(spawnedUnit);
-    }
-
-    [ServerCallback]
-    void Test2()
-    {
-        GameObject spawnedUnit = Instantiate(TestObj, new Vector3(2.58f, 0, 1.4f), TestObj.transform.rotation) as GameObject;
-        //Registers for tracking
-        spawnedUnit.GetComponent<PlayerID>().ID = 1;
-        spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
-        NetworkServer.Spawn(spawnedUnit);
-    }
 }

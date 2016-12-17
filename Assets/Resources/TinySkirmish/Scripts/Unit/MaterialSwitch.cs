@@ -11,6 +11,7 @@ public class MaterialSwitch : MonoBehaviour
     public int LobbyID = 0;
 
     private Renderer TheRenderer;
+    private PlayerID ThePlayerID;
 
     private ManagerTracker Tracker;
 
@@ -18,6 +19,7 @@ public class MaterialSwitch : MonoBehaviour
     {
         Tracker = FindObjectOfType<ManagerTracker>();
         TheRenderer = GetComponent<Renderer>();
+        ThePlayerID = GetComponent<PlayerID>();
     }
 
     void Update()
@@ -95,7 +97,36 @@ public class MaterialSwitch : MonoBehaviour
         }
         else
         {
+            if (ThePlayerID.ID > Tracker.NumberOfPlayers) return;
 
+            if (!Reverse)
+            {
+                Color outlineEmissionConverted = Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineEmissionColor * Mathf.LinearToGammaSpace(Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineEmissionlevel);
+                TheRenderer.materials[0].SetColor("_Color", Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineColor);
+                TheRenderer.materials[0].SetColor("_EmissionColor", outlineEmissionConverted);
+                TheRenderer.materials[0].EnableKeyword("_EMISSION");
+                if (TheRenderer.materials.Length > 1)
+                {
+                    Color baseEmissionConverted = Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseEmissionColor * Mathf.LinearToGammaSpace(Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseEmissionlevel);
+                    TheRenderer.materials[1].SetColor("_Color", Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseColor);
+                    TheRenderer.materials[1].SetColor("_EmissionColor", baseEmissionConverted);
+                    TheRenderer.materials[1].EnableKeyword("_EMISSION");
+                }
+            }
+            else
+            {
+                Color baseEmissionConverted = Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseEmissionColor * Mathf.LinearToGammaSpace(Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseEmissionlevel);
+                TheRenderer.materials[0].SetColor("_Color", Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].BaseColor);
+                TheRenderer.materials[0].SetColor("_EmissionColor", baseEmissionConverted);
+                TheRenderer.materials[0].EnableKeyword("_EMISSION");
+                if (TheRenderer.materials.Length > 1)
+                {
+                    Color outlineEmissionConverted = Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineEmissionColor * Mathf.LinearToGammaSpace(Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineEmissionlevel);
+                    TheRenderer.materials[1].SetColor("_Color", Tracker.TheResourceManager.PlayerColor[ThePlayerID.ID].OutlineColor);
+                    TheRenderer.materials[1].SetColor("_EmissionColor", outlineEmissionConverted);
+                    TheRenderer.materials[1].EnableKeyword("_EMISSION");
+                }
+            }
         }
     }
 }

@@ -15,6 +15,6 @@ public class DestroyDistance : NetworkBehaviour
     void FixedUpdate()
     {
         if (!isServer) return;
-        if (Vector3.Distance(StartingPosition, transform.position) >= Distance) Destroy(gameObject);
+        if (Vector3.Distance(StartingPosition, transform.position) >= Distance) FindObjectOfType<ObjectSyncManager>().DestroySyncedObject(transform.name);
     }
 }

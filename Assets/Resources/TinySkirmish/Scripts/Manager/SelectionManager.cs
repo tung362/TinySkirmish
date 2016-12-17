@@ -89,8 +89,11 @@ public class SelectionManager : MonoBehaviour
         GameObject[] units = GameObject.FindGameObjectsWithTag("Unit");
         foreach (GameObject unit in units)
         {
-            if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.transform.root.GetComponent<UnitStats>().IsSelected = true;
-            else unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
+            if(unit != null)
+            {
+                if (SelectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position))) unit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+                else unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
+            }
         }
     }
 
@@ -117,7 +120,7 @@ public class SelectionManager : MonoBehaviour
                 if (mouseHit.transform.tag == "Unit")
                 {
                     SelectedUnits.Add(mouseHit.transform.root.gameObject);
-                    mouseHit.transform.root.GetComponent<UnitStats>().IsSelected = true;
+                    if(mouseHit.transform != null) mouseHit.transform.root.GetComponent<UnitStats>().IsSelected = true;
                 }
             }
         }
@@ -126,7 +129,10 @@ public class SelectionManager : MonoBehaviour
     //Clears list and unapply hover effect
     void ResetSelect()
     {
-        foreach (GameObject unit in SelectedUnits) unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
+        foreach (GameObject unit in SelectedUnits)
+        {
+            if (unit != null) unit.transform.root.GetComponent<UnitStats>().IsSelected = false;
+        }
         SelectedUnits.Clear();
     }
 }

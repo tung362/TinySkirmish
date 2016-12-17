@@ -28,6 +28,11 @@ public class ShowUiStats : MonoBehaviour
     public bool ShowRailUnitView = false;
     public bool ShowLaserUnitView = false;
 
+    public bool ShowRapidUnitSelect = false;
+    public bool ShowMissileUnitSelect = false;
+    public bool ShowRailUnitSelect = false;
+    public bool ShowLaserUnitSelect = false;
+
     //Stat Bar
     public bool ShowShieldDamageUnlockView = false;
     public bool ShowHullDamageUnlockView = false;
@@ -253,6 +258,38 @@ public class ShowUiStats : MonoBehaviour
             if (Tracker.BuildingSelected)
             {
                 if (Tracker.CurrentUnitView == 4) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowRapidUnitSelect)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.TheResourceManager.UnlockedRapid[Tracker.ID]) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowMissileUnitSelect)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.TheResourceManager.UnlockedMissile[Tracker.ID]) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowRailUnitSelect)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.TheResourceManager.UnlockedRail[Tracker.ID]) TheMeshRenderer.enabled = true;
+                else TheMeshRenderer.enabled = false;
+            }
+        }
+        if (ShowLaserUnitSelect)
+        {
+            if (Tracker.BuildingSelected)
+            {
+                if (Tracker.TheResourceManager.UnlockedLaser[Tracker.ID]) TheMeshRenderer.enabled = true;
                 else TheMeshRenderer.enabled = false;
             }
         }

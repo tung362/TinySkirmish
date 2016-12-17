@@ -48,7 +48,7 @@ public class UnitCommand : MonoBehaviour
                 //Attack building
                 if(HitBase != null)
                 {
-                    foreach(GameObject unit in Tracker.TheSelectionManager.SelectedUnits) Tracker.TheCommandManager.CmdToggleAttackBuilding(HitBase, unit);
+                    foreach(GameObject unit in Tracker.TheSelectionManager.SelectedUnits) if(unit != null) Tracker.TheCommandManager.CmdToggleAttackBuilding(HitBase, unit);
                 }
                 //Move to destination
                 else
@@ -74,11 +74,10 @@ public class UnitCommand : MonoBehaviour
                             if (approved) takenPositions.Add(PossiblePosition);
                             else i -= 1;
                         }
-                        //Tracker.TheCommandManager.CmdToggleAutoPath(GeneratePoint(groundHitPosition, Tracker.TheSelectionManager.SelectedUnits.Count, 0.1f), Tracker.TheSelectionManager.SelectedUnits[i]);
                     }
                     for (int i = 0; i < Tracker.TheSelectionManager.SelectedUnits.Count; ++i)
                     {
-                        Tracker.TheCommandManager.CmdToggleAutoPath(takenPositions[i], Tracker.TheSelectionManager.SelectedUnits[i]);
+                        if(Tracker.TheSelectionManager.SelectedUnits[i] != null) Tracker.TheCommandManager.CmdToggleAutoPath(takenPositions[i], Tracker.TheSelectionManager.SelectedUnits[i]);
                     }
                 }
             }

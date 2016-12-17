@@ -5,6 +5,9 @@ using UnityEngine.Networking;
 //Handles the client's resources, gets updated through the server's resource manager
 public class ResourceManager : NetworkBehaviour
 {
+    public GameObject GateBuilding;
+    public bool RunOnce = true;
+
     //Resources
     public SyncListInt Money = new SyncListInt();
 
@@ -52,6 +55,29 @@ public class ResourceManager : NetworkBehaviour
             FindObjectOfType<ManagerTracker>().TheResourceManager = this;
             AssignManagerTracker = false;
         }
+
+        if(isServer)
+        {
+            GameObject[] gateSpawners = GameObject.FindGameObjectsWithTag("GateSpawnSpot");
+
+            if(gateSpawners.Length != 0)
+            {
+                if (RunOnce)
+                {
+                    foreach(GameObject gateSpawner in gateSpawners)
+                    {
+                        Debug.Log(gateSpawner.transform.position);
+                        GateSpawnSpot theGateSpawnSpot = gateSpawner.GetComponent<GateSpawnSpot>();
+                        if (theGateSpawnSpot.IsPlayer1Location) SpawnGate(0, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
+                        else if (theGateSpawnSpot.IsPlayer2Location) SpawnGate(1, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
+                        else if (theGateSpawnSpot.IsPlayer3Location) SpawnGate(2, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
+                        else if (theGateSpawnSpot.IsPlayer4Location) SpawnGate(3, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
+                        else SpawnGate(-1, new Vector3(gateSpawner.transform.position.x, -0.1f, gateSpawner.transform.position.z));
+                    }
+                    RunOnce = false;
+                }
+            }
+        }
     }
 
     void OnNumberOfPlayersChanged(int NewValue)
@@ -67,7 +93,7 @@ public class ResourceManager : NetworkBehaviour
     [ServerCallback]
     public void AddNewPlayerResource()
     {
-        Money.Add(100);
+        Money.Add(150);
         UnlockedRapid.Add(false);
         UnlockedMissile.Add(false);
         UnlockedRail.Add(false);
@@ -143,5 +169,49 @@ public class ResourceManager : NetworkBehaviour
             }
         }
         if(canStart) FindObjectOfType<NetworkManager>().ServerChangeScene(LevelName);
+    }
+
+    public void SpawnGate(int choice, Vector3 GatePosition)
+    {
+        if (choice == 0)
+        {
+            GameObject spawnedUnit = Instantiate(GateBuilding, GatePosition, GateBuilding.transform.rotation) as GameObject;
+            //Registers for tracking
+            spawnedUnit.GetComponent<Gate>().ID = 0;
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+            NetworkServer.Spawn(spawnedUnit);
+        }
+        else if (choice == 1)
+        {
+            GameObject spawnedUnit = Instantiate(GateBuilding, GatePosition, GateBuilding.transform.rotation) as GameObject;
+            //Registers for tracking
+            spawnedUnit.GetComponent<Gate>().ID = 1;
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+            NetworkServer.Spawn(spawnedUnit);
+        }
+        else if (choice == 2)
+        {
+            GameObject spawnedUnit = Instantiate(GateBuilding, GatePosition, GateBuilding.transform.rotation) as GameObject;
+            //Registers for tracking
+            spawnedUnit.GetComponent<Gate>().ID = 2;
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+            NetworkServer.Spawn(spawnedUnit);
+        }
+        else if (choice == 3)
+        {
+            GameObject spawnedUnit = Instantiate(GateBuilding, GatePosition, GateBuilding.transform.rotation) as GameObject;
+            //Registers for tracking
+            spawnedUnit.GetComponent<Gate>().ID = 3;
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+            NetworkServer.Spawn(spawnedUnit);
+        }
+        else if (choice == -1)
+        {
+            GameObject spawnedUnit = Instantiate(GateBuilding, GatePosition, GateBuilding.transform.rotation) as GameObject;
+            //Registers for tracking
+            spawnedUnit.GetComponent<Gate>().ID = -1;
+            spawnedUnit.GetComponent<NameSync>().ObjectNameNumber = FindObjectOfType<ObjectSyncManager>().GenerateUniqueName();
+            NetworkServer.Spawn(spawnedUnit);
+        }
     }
 }

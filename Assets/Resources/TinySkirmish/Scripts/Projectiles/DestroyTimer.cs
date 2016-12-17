@@ -11,6 +11,6 @@ public class DestroyTimer : NetworkBehaviour
     {
         if (!isServer) return;
         Timer += Time.fixedDeltaTime;
-        if (Timer >= Delay) Destroy(gameObject);
+        if (Timer >= Delay) FindObjectOfType<ObjectSyncManager>().DestroySyncedObject(transform.name);
     }
 }

@@ -1,5 +1,5 @@
 # TinySkirmish
-RTS game made using Unity's unet network API.  
+RTS game made using Unity's Unet network API.  
 2 week project.
 
 https://youtu.be/EqMuDPAqbLM  
